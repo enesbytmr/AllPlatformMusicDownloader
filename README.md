@@ -99,13 +99,23 @@ After installing the dependencies you can run the test suite with
 pytest
 ```
 
-### Frontend (optional)
+### Frontend
 
-* Next.js + Tailwind CSS (planned UI)
-* Features:
+The repository contains a [`create-next-app`](https://nextjs.org/) project in
+`frontend/`. It exposes pages for user login, playlist upload and task progress
+which communicate with the FastAPI backend.
 
-  * Upload `.txt` or paste playlist link
-  * Get download once ready
+To run the development server:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The pages use the backend running on `http://localhost:8000` for authentication
+and download status APIs.
+
 
 ---
 
