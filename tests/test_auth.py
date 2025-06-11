@@ -4,6 +4,9 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+os.environ["CELERY_BROKER_URL"] = "memory://"
+os.environ["CELERY_RESULT_BACKEND"] = "cache+memory://"
+os.environ["CELERY_TASK_ALWAYS_EAGER"] = "false"
 from backend.main import app
 
 client = TestClient(app)
