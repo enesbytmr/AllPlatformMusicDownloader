@@ -5,7 +5,7 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks, Depends
 from fastapi.responses import FileResponse
 
 from .downloader.youtube import download_youtube_track
@@ -47,7 +47,7 @@ async def _download_tracks(tracks: list[str], temp_dir: Path) -> None:
 
 @app.post("/download/text")
 async def download_from_text(
-    file: UploadFile = File(...), background_tasks: BackgroundTasks | None = None
+    background_tasks: BackgroundTasks, file: UploadFile = File(...)
 ):
     """Accept a .txt file of tracks, download them and return a zip."""
 
@@ -72,7 +72,7 @@ async def download_from_text(
 
 @app.post("/download/playlist")
 async def download_from_playlist(
-    link: str = Form(...), background_tasks: BackgroundTasks | None = None
+    background_tasks: BackgroundTasks, link: str = Form(...)
 ):
     """Fetch playlist ``link`` and return downloaded zip."""
 

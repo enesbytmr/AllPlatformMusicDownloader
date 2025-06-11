@@ -82,6 +82,15 @@ User provides a playlist link (e.g., from Spotify):
    uvicorn backend.main:app --reload
    ```
 
+### Running Tests
+
+After installing the dependencies you can run the test suite with
+`pytest`:
+
+```bash
+pytest
+```
+
 ### Frontend (optional)
 
 * Next.js + Tailwind CSS (planned UI)
