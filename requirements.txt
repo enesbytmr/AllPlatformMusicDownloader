@@ -9,3 +9,5 @@ python-jose[cryptography]
 passlib[bcrypt]
 httpx<0.25
 python-multipart
+celery
+redis
