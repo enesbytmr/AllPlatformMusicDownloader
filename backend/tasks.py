@@ -17,7 +17,9 @@ celery = Celery(
     broker=CELERY_BROKER_URL,
     backend=CELERY_RESULT_BACKEND,
 )
-celery.conf.task_always_eager = os.getenv("CELERY_TASK_ALWAYS_EAGER", "false").lower() == "true"
+celery.conf.task_always_eager = (
+    os.getenv("CELERY_TASK_ALWAYS_EAGER", "false").lower() == "true"
+)
 
 FAIL_LOG = Path("not_downloaded.txt")
 
@@ -28,12 +30,17 @@ def _record_failure(track: str) -> None:
         f.write(track + "\n")
 
 
-def _cleanup(zip_path: Path, temp_dir: Path) -> None:
-    """Delete created files and directories."""
+def _cleanup(zip_path: Path, temp_dir: Path, user_id: int) -> None:
+    """Delete created files and directories for ``user_id``."""
+
     if zip_path.exists():
         zip_path.unlink()
     if temp_dir.exists():
         shutil.rmtree(temp_dir, ignore_errors=True)
+
+    user_dir = Path("temp") / str(user_id)
+    if user_dir.exists():
+        shutil.rmtree(user_dir, ignore_errors=True)
 
 
 async def _download_tracks_async(tracks: list[str], temp_dir: Path) -> None:
@@ -51,10 +58,14 @@ async def _download_tracks_async(tracks: list[str], temp_dir: Path) -> None:
 
 
 @celery.task(bind=True)
-def download_tracks(self, tracks: list[str]) -> str:
-    """Celery task that downloads ``tracks`` and cleans up."""
-    temp_dir = Path(tempfile.mkdtemp(dir="temp"))
+def download_tracks(self, tracks: list[str], user_id: int) -> str:
+    """Celery task that downloads ``tracks`` for ``user_id`` and cleans up."""
+
+    user_dir = Path("temp") / str(user_id)
+    user_dir.mkdir(parents=True, exist_ok=True)
+    temp_dir = Path(tempfile.mkdtemp(dir=user_dir))
+
     asyncio.run(_download_tracks_async(tracks, temp_dir))
     zip_path = zip_temp_directory(temp_dir)
-    _cleanup(zip_path, temp_dir)
+    _cleanup(zip_path, temp_dir, user_id)
     return str(zip_path)
