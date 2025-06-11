@@ -10,4 +10,6 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     subscription = Column(String, default="free")
-    oauth_token = Column(String, nullable=True)
+    spotify_token = Column(String, nullable=True)
+    youtube_token = Column(String, nullable=True)
+    soundcloud_token = Column(String, nullable=True)

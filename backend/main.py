@@ -19,6 +19,7 @@ from fastapi.responses import FileResponse
 from .auth.router import router as auth_router, get_current_user
 from .auth import models as auth_models
 from .auth.database import engine
+from .oauth import router as oauth_router
 
 from .downloader.youtube import download_youtube_track
 from .downloader.spotify import fetch_spotify_playlist
@@ -29,6 +30,7 @@ FAIL_LOG = Path("not_downloaded.txt")
 app = FastAPI()
 auth_models.Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
+app.include_router(oauth_router)
 
 
 def _record_failure(track: str) -> None:
