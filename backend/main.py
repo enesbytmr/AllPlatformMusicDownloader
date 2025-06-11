@@ -43,7 +43,10 @@ async def download_from_text(
     if not lines:
         raise HTTPException(status_code=400, detail="File is empty")
 
-    task = download_tracks.delay(lines)
+    user_dir = Path("temp") / str(current_user.id)
+    user_dir.mkdir(parents=True, exist_ok=True)
+
+    task = download_tracks.delay(lines, current_user.id)
     return {"task_id": task.id}
 
 
@@ -58,7 +61,10 @@ async def download_from_playlist(
     if not tracks:
         raise HTTPException(status_code=404, detail="No tracks found")
 
-    task = download_tracks.delay(tracks)
+    user_dir = Path("temp") / str(current_user.id)
+    user_dir.mkdir(parents=True, exist_ok=True)
+
+    task = download_tracks.delay(tracks, current_user.id)
     return {"task_id": task.id}
 
 
