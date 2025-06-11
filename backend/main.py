@@ -10,7 +10,9 @@ from fastapi import (
     Form,
     HTTPException,
     Depends,
+    BackgroundTasks,
 )
+from fastapi.responses import FileResponse
 
 from .auth.router import router as auth_router, get_current_user
 from .auth import models as auth_models
@@ -19,6 +21,7 @@ from .oauth import router as oauth_router
 
 from .downloader.spotify import fetch_spotify_playlist
 from .tasks import celery, download_tracks
+from .tasks import _cleanup
 
 FAIL_LOG = Path("not_downloaded.txt")
 
@@ -81,6 +84,27 @@ def cancel_task(task_id: str):
     result = celery.AsyncResult(task_id)
     result.revoke(terminate=True)
     return {"task_id": task_id, "status": "REVOKED"}
+
+
+@app.get("/download/file/{task_id}")
+def serve_file(
+    task_id: str,
+    background_tasks: BackgroundTasks,
+    current_user: auth_models.User = Depends(get_current_user),
+):
+    """Return the zipped file for ``task_id`` and clean up."""
+
+    result = celery.AsyncResult(task_id)
+    if not result.ready():
+        raise HTTPException(status_code=202, detail="Task not completed")
+
+    zip_path = Path(result.result)
+    if not zip_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    temp_dir = zip_path.with_suffix("")
+    background_tasks.add_task(_cleanup, zip_path, temp_dir, current_user.id)
+    return FileResponse(zip_path, filename=zip_path.name, media_type="application/zip")
 
 
 @app.get("/")

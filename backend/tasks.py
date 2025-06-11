@@ -67,5 +67,4 @@ def download_tracks(self, tracks: list[str], user_id: int) -> str:
 
     asyncio.run(_download_tracks_async(tracks, temp_dir))
     zip_path = zip_temp_directory(temp_dir)
-    _cleanup(zip_path, temp_dir, user_id)
     return str(zip_path)
