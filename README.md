@@ -121,6 +121,17 @@ allplatformmusic/
 └── README.md
 ```
 
+### Downloader Modules
+
+The downloader package exposes convenience functions:
+
+* `download_youtube_track(url: str, output_dir: Path) -> Path`
+* `fetch_spotify_playlist(playlist_url: str) -> List[str]`
+* `download_soundcloud_track(url: str, output_dir: Path) -> Path`
+
+These helpers are thin wrappers around ``yt-dlp``, ``spotdl`` and ``scdl``
+respectively.
+
 ---
 
 ## 👋 Contributing
