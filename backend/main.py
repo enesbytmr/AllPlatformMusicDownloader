@@ -5,8 +5,20 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks, Depends
+from fastapi import (
+    FastAPI,
+    File,
+    UploadFile,
+    Form,
+    HTTPException,
+    BackgroundTasks,
+    Depends,
+)
 from fastapi.responses import FileResponse
+
+from .auth.router import router as auth_router, get_current_user
+from .auth import models as auth_models
+from .auth.database import engine
 
 from .downloader.youtube import download_youtube_track
 from .downloader.spotify import fetch_spotify_playlist
@@ -15,6 +27,8 @@ from .utils.zipper import zip_temp_directory
 FAIL_LOG = Path("not_downloaded.txt")
 
 app = FastAPI()
+auth_models.Base.metadata.create_all(bind=engine)
+app.include_router(auth_router)
 
 
 def _record_failure(track: str) -> None:
@@ -47,7 +61,9 @@ async def _download_tracks(tracks: list[str], temp_dir: Path) -> None:
 
 @app.post("/download/text")
 async def download_from_text(
-    background_tasks: BackgroundTasks, file: UploadFile = File(...)
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+    current_user: auth_models.User = Depends(get_current_user),
 ):
     """Accept a .txt file of tracks, download them and return a zip."""
 
@@ -72,7 +88,9 @@ async def download_from_text(
 
 @app.post("/download/playlist")
 async def download_from_playlist(
-    background_tasks: BackgroundTasks, link: str = Form(...)
+    background_tasks: BackgroundTasks,
+    link: str = Form(...),
+    current_user: auth_models.User = Depends(get_current_user),
 ):
     """Fetch playlist ``link`` and return downloaded zip."""
 
