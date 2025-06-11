@@ -18,6 +18,14 @@ pip install -r requirements.txt
 uvicorn backend.main:app --reload
 ```
 
+To handle background tasks you need a running Redis instance. Configure
+`CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` in your environment and start a
+Celery worker:
+
+```bash
+celery -A backend.tasks worker --loglevel=info
+```
+
 
 ---
 
