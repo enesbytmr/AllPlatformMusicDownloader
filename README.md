@@ -11,6 +11,14 @@ Users can upload a `.txt` file listing songs or provide a playlist link, and the
 * Zip the files and provide the download.
 * Clean up the temporary data after download.
 
+## Quickstart
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.main:app --reload
+```
+
+
 ---
 
 ## 🚀 Project Goals
@@ -144,9 +152,7 @@ respectively.
 ---
 
 ## 👋 Contributing
-
-Feel free to fork and suggest improvements! Focus areas include:
-
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, coding style and pull request guidelines. Focus areas include:
 * Match scoring improvement
 * Platform API integration
 * Download performance optimization
@@ -155,4 +161,4 @@ Feel free to fork and suggest improvements! Focus areas include:
 
 ## 📢 License
 
-MIT License (TBD)
+This project is licensed under the [MIT License](LICENSE).
