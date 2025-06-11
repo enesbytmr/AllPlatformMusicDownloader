@@ -25,8 +25,6 @@ from .downloader.spotify import fetch_spotify_playlist
 from .tasks import celery, download_tracks
 from .tasks import _cleanup
 
-FAIL_LOG = Path("not_downloaded.txt")
-
 app = FastAPI()
 auth_models.Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
@@ -80,7 +78,20 @@ async def download_from_playlist(
 def get_status(task_id: str):
     """Return Celery task status."""
     result = celery.AsyncResult(task_id)
-    return {"task_id": task_id, "status": result.status}
+    response = {"task_id": task_id, "status": result.status}
+
+    user_id = None
+    if isinstance(result.info, dict) and "user_id" in result.info:
+        user_id = result.info["user_id"]
+
+    if user_id is not None:
+        fail_log = Path("temp") / str(user_id) / "not_downloaded.txt"
+        if fail_log.exists():
+            failed = [l.strip() for l in fail_log.read_text().splitlines() if l.strip()]
+            if failed:
+                response["failed"] = failed
+
+    return response
 
 
 @app.post("/cancel/{task_id}")
@@ -103,7 +114,11 @@ def serve_file(
     if not result.ready():
         raise HTTPException(status_code=202, detail="Task not completed")
 
-    zip_path = Path(result.result)
+    data = result.result
+    if isinstance(data, dict):
+        zip_path = Path(data.get("zip_path", ""))
+    else:
+        zip_path = Path(data)
     if not zip_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
 

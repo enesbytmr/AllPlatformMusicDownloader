@@ -55,7 +55,7 @@ User provides a playlist link (e.g., from Spotify):
 
 * Each download task includes a `retry_limit` (e.g., 3 tries per track).
 * Errors are logged.
-* If a track fails to download, it is recorded in a `not_downloaded.txt` file.
+* If a track fails to download after retries, it is recorded in a `not_downloaded.txt` file inside the user's temporary directory.
 * All tasks are handled asynchronously for performance (via asyncio or Celery+Redis).
 
 ---
