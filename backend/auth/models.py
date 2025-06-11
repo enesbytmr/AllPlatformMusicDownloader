@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime
 
 from .database import Base
 
@@ -10,6 +12,8 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     subscription = Column(String, default="free")
+    usage = Column(Integer, default=0)
+    quota_reset = Column(DateTime, default=datetime.utcnow)
     spotify_token = Column(String, nullable=True)
     youtube_token = Column(String, nullable=True)
     soundcloud_token = Column(String, nullable=True)

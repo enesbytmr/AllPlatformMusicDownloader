@@ -11,3 +11,4 @@ httpx<0.25
 python-multipart
 celery
 redis
+stripe
