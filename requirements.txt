@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+yt-dlp
+spotdl
+scdl
+pytest

@@ -69,6 +69,19 @@ User provides a playlist link (e.g., from Spotify):
   * Generate `.zip`
   * Serve zip and delete all files
 
+## ⚙️ Setup
+
+1. Clone the repository.
+2. Install Python 3.10+.
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the FastAPI server (example):
+   ```bash
+   uvicorn backend.main:app --reload
+   ```
+
 ### Frontend (optional)
 
 * Next.js + Tailwind CSS (planned UI)
