@@ -25,6 +25,7 @@ Celery worker:
 ```bash
 celery -A backend.tasks worker --loglevel=info
 ```
+Set `JWT_SECRET` in your environment to configure the token signing key.
 
 
 ---
