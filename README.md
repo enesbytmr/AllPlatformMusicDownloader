@@ -27,6 +27,10 @@ celery -A backend.tasks worker --loglevel=info
 ```
 Set `JWT_SECRET` in your environment to configure the token signing key.
 
+Set `SPOTIFY_CLIENT_ID` and `SPOTIFY_REDIRECT_URI` for Spotify OAuth.
+Set `YOUTUBE_CLIENT_ID` and `YOUTUBE_REDIRECT_URI` for YouTube OAuth.
+Set `SOUNDCLOUD_CLIENT_ID` and `SOUNDCLOUD_REDIRECT_URI` for SoundCloud OAuth.
+
 
 ---
 
