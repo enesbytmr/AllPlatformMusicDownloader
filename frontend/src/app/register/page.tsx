@@ -2,6 +2,7 @@
 import { useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -11,7 +12,7 @@ export default function Register() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const resp = await fetch('http://localhost:8000/auth/register', {
+    const resp = await fetch(`${API}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

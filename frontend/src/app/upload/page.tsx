@@ -2,6 +2,7 @@
 import { useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 export default function Upload() {
   const [link, setLink] = useState('')
@@ -10,7 +11,7 @@ export default function Upload() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const resp = await fetch('http://localhost:8000/download/playlist', {
+    const resp = await fetch(`${API}/download/playlist`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`

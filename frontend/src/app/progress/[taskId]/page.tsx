@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from '../../AuthContext'
+import { API } from '@/api'
 import { useRouter } from 'next/navigation'
 
 export default function Progress({ params }: { params: { taskId: string } }) {
@@ -11,7 +12,7 @@ export default function Progress({ params }: { params: { taskId: string } }) {
 
   useEffect(() => {
     const timer = setInterval(async () => {
-      const resp = await fetch(`http://localhost:8000/status/${taskId}`)
+      const resp = await fetch(`${API}/status/${taskId}`)
       if (resp.ok) {
         const data = await resp.json()
         setStatus(data.status)
@@ -24,7 +25,7 @@ export default function Progress({ params }: { params: { taskId: string } }) {
   }, [taskId])
 
   const download = async () => {
-    const resp = await fetch(`http://localhost:8000/download/file/${taskId}`, {
+    const resp = await fetch(`${API}/download/file/${taskId}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     if (resp.ok) {

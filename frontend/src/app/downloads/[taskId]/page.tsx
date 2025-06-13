@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../../AuthContext'
+import { API } from '@/api'
 
 interface Info {
   status: string
@@ -19,13 +20,13 @@ export default function DownloadSummary({ params }: { params: { taskId: string }
       router.push('/login')
       return
     }
-    fetch(`http://localhost:8000/status/${taskId}`)
+    fetch(`${API}/status/${taskId}`)
       .then(r => r.ok && r.json())
       .then(data => data && setInfo(data))
   }, [loaded, token, taskId])
 
   const download = async () => {
-    const resp = await fetch(`http://localhost:8000/download/file/${taskId}`, {
+    const resp = await fetch(`${API}/download/file/${taskId}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     if (resp.ok) {
@@ -44,7 +45,7 @@ export default function DownloadSummary({ params }: { params: { taskId: string }
     const form = new FormData()
     const file = new Blob([info.failed.join('\n')], { type: 'text/plain' })
     form.append('file', file, 'tracks.txt')
-    const resp = await fetch('http://localhost:8000/download/text', {
+    const resp = await fetch(`${API}/download/text`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: form
