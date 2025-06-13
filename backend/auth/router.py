@@ -60,7 +60,7 @@ def get_current_user(
     except JWTError:
         raise credentials_exception
 
-    user = db.query(models.User).get(int(user_id))
+    user = db.get(models.User, int(user_id))
     if user is None:
         raise credentials_exception
     return user
