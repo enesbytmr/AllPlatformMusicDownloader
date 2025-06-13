@@ -1,14 +1,15 @@
 'use client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
+import { AuthContext } from '../AuthContext'
 
 export default function Upload() {
   const [link, setLink] = useState('')
   const router = useRouter()
+  const { token } = useContext(AuthContext)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const token = localStorage.getItem('token')
     const resp = await fetch('http://localhost:8000/download/playlist', {
       method: 'POST',
       headers: {
@@ -18,6 +19,8 @@ export default function Upload() {
     })
     if (resp.ok) {
       const data = await resp.json()
+      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]')
+      localStorage.setItem('tasks', JSON.stringify([data.task_id, ...tasks]))
       router.push(`/progress/${data.task_id}`)
     } else {
       alert('Upload failed')
