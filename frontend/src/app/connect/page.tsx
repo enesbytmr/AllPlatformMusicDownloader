@@ -2,6 +2,7 @@
 import { useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 export default function Connect() {
   const { token, loaded } = useContext(AuthContext)
@@ -13,7 +14,7 @@ export default function Connect() {
   }
 
   const connect = async (service: string) => {
-    const resp = await fetch(`http://localhost:8000/connect/${service}`, {
+    const resp = await fetch(`${API}/connect/${service}`, {
       headers: { Authorization: `Bearer ${token}` },
       redirect: 'manual'
     })

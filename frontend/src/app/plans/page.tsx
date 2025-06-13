@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 interface Plan {
   limit: number
@@ -18,13 +19,13 @@ export default function Plans() {
       router.push('/login')
       return
     }
-    fetch('http://localhost:8000/billing/plans')
+    fetch(`${API}/billing/plans`)
       .then(r => r.json())
       .then(setPlans)
   }, [loaded, token])
 
   const upgrade = async (plan: string) => {
-    const resp = await fetch(`http://localhost:8000/billing/upgrade?plan=${plan}`, {
+    const resp = await fetch(`${API}/billing/upgrade?plan=${plan}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` }
     })

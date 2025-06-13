@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 export default function Dashboard() {
   const { token, loaded } = useContext(AuthContext)
@@ -23,7 +24,7 @@ export default function Dashboard() {
     if (!tasks.length) return
     const timer = setInterval(() => {
       tasks.forEach(async id => {
-        const resp = await fetch(`http://localhost:8000/status/${id}`)
+        const resp = await fetch(`${API}/status/${id}`)
         if (resp.ok) {
           const data = await resp.json()
           setStatuses(s => ({ ...s, [id]: data.status }))
@@ -35,7 +36,7 @@ export default function Dashboard() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const resp = await fetch('http://localhost:8000/download/playlist', {
+    const resp = await fetch(`${API}/download/playlist`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: new URLSearchParams({ link })

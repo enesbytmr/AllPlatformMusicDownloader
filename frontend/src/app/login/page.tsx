@@ -2,6 +2,7 @@
 import { useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthContext } from '../AuthContext'
+import { API } from '@/api'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -11,7 +12,7 @@ export default function Login() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const resp = await fetch('http://localhost:8000/auth/login', {
+    const resp = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
