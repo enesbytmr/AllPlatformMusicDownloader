@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
+import os
 
 from ..auth.router import get_current_user
 from ..auth import models
@@ -7,7 +8,12 @@ from ..auth.database import get_db
 
 router = APIRouter()
 
-AUTH_URL = "https://accounts.spotify.com/authorize?client_id=dummy&response_type=code&redirect_uri=http://localhost/callback/spotify"
+CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "dummy")
+REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost/callback/spotify")
+AUTH_URL = (
+    "https://accounts.spotify.com/authorize?client_id="
+    f"{CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}"
+)
 
 @router.get("/connect/spotify")
 def connect_spotify(current_user: models.User = Depends(get_current_user)):

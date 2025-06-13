@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
+import os
 
 from ..auth.router import get_current_user
 from ..auth import models
@@ -7,7 +8,12 @@ from ..auth.database import get_db
 
 router = APIRouter()
 
-AUTH_URL = "https://accounts.google.com/o/oauth2/auth?client_id=dummy&response_type=code&redirect_uri=http://localhost/callback/youtube"
+CLIENT_ID = os.getenv("YOUTUBE_CLIENT_ID", "dummy")
+REDIRECT_URI = os.getenv("YOUTUBE_REDIRECT_URI", "http://localhost/callback/youtube")
+AUTH_URL = (
+    "https://accounts.google.com/o/oauth2/auth?client_id="
+    f"{CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}"
+)
 
 @router.get("/connect/youtube")
 def connect_youtube(current_user: models.User = Depends(get_current_user)):
